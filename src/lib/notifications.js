@@ -2,7 +2,7 @@
 
 const ADMIN_WHATSAPP = import.meta.env.VITE_ADMIN_WHATSAPP
 const ADMIN_EMAIL    = import.meta.env.VITE_ADMIN_EMAIL
-const APP_URL        = import.meta.env.VITE_APP_URL || 'https://varagam.in'
+const APP_URL        = import.meta.env.VITE_APP_URL || 'https://Varagan.in'
 
 // ─── WhatsApp (opens wa.me link — works on mobile & desktop) ─────────────────
 
@@ -12,7 +12,7 @@ export function sendWhatsAppToAdmin(message) {
 }
 
 export function notifyAdminNewListing(listing, sellerName, sellerPhone) {
-  const msg = `🏡 *New Listing - Varagam*\n\n` +
+  const msg = `🏡 *New Listing - Varagan*\n\n` +
     `📋 *${listing.title}*\n` +
     `📍 ${listing.district}, ${listing.taluk || ''}\n` +
     `📐 ${listing.area_value} ${listing.area_unit}\n` +
@@ -25,7 +25,7 @@ export function notifyAdminNewListing(listing, sellerName, sellerPhone) {
 }
 
 export function notifyAdminNewInquiry(listing, inquiry) {
-  const msg = `📩 *New Inquiry - Varagam*\n\n` +
+  const msg = `📩 *New Inquiry - Varagan*\n\n` +
     `🏡 Listing: *${listing.title}*\n` +
     `📍 ${listing.district}\n\n` +
     `👤 Buyer: ${inquiry.buyer_name}\n` +
@@ -43,7 +43,7 @@ export function notifySellerWhatsApp(sellerPhone, status, listingTitle, reason) 
       `🏡 "${listingTitle}"\n\n` +
       `உங்கள் property இப்போது live ஆகிவிட்டது!\n` +
       `🔗 ${APP_URL}/listings`
-    : `❌ *Listing Rejected - Varagam*\n\n` +
+    : `❌ *Listing Rejected - Varagan*\n\n` +
       `🏡 "${listingTitle}"\n\n` +
       `காரணம்: ${reason || 'Please contact admin for details'}\n\n` +
       `Corrections செய்து மீண்டும் submit செய்யலாம்.\n` +
@@ -73,7 +73,7 @@ export async function sendEmailNotification({ to, subject, body }) {
 export async function emailAdminNewListing(listing, sellerName) {
   await sendEmailNotification({
     to: ADMIN_EMAIL,
-    subject: `[Varagam] New listing pending review: ${listing.title}`,
+    subject: `[Varagan] New listing pending review: ${listing.title}`,
     body: `New listing submitted:\n\nTitle: ${listing.title}\nDistrict: ${listing.district}\nArea: ${listing.area_value} ${listing.area_unit}\nPrice: ₹${Number(listing.price).toLocaleString('en-IN')}\nSeller: ${sellerName}\n\nReview at: ${APP_URL}/admin/listings`,
   })
 }
@@ -84,3 +84,4 @@ import { supabase } from './supabase'
 export async function createNotification(userId, type, title, body, metadata = {}) {
   await supabase.from('notifications').insert({ user_id: userId, type, title, body, metadata })
 }
+

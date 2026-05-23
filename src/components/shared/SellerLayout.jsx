@@ -24,7 +24,7 @@ export default function SellerLayout() {
     <aside className={`${mobile?'':'hidden md:flex'} flex-col w-64 bg-white border-r border-gray-100 min-h-screen`}>
       {/* Brand */}
       <div className="h-16 flex items-center px-6 border-b border-gray-100">
-        <Link to="/" className="font-display font-bold text-forest-700 text-lg">Varagam</Link>
+        <Link to="/" className="font-display font-bold text-forest-700 text-lg">Varagan</Link>
         <span className="ml-2 text-xs bg-earth-100 text-earth-700 px-2 py-0.5 rounded-full">Seller</span>
       </div>
 
@@ -86,7 +86,7 @@ export default function SellerLayout() {
           <button onClick={()=>setSidebarOpen(true)} className="p-1.5">
             <Menu size={20}/>
           </button>
-          <span className="font-display font-bold text-forest-700">Varagam</span>
+          <span className="font-display font-bold text-forest-700">Varagan</span>
         </div>
 
         <main className="flex-1 p-4 md:p-8 page-enter">
@@ -96,3 +96,4 @@ export default function SellerLayout() {
     </div>
   )
 }
+

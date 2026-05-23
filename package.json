@@ -1,5 +1,5 @@
 {
-  "name": "varagam-real-estate",
+  "name": "Varagan-real-estate",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -34,3 +34,4 @@
     "vite-plugin-pwa": "^0.17.4"
   }
 }
+

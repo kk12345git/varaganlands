@@ -28,7 +28,7 @@ export default function PublicLayout() {
               <span className="text-white font-display font-bold text-sm">V</span>
             </div>
             <div>
-              <span className="font-display font-bold text-forest-700 text-lg leading-none block">Varagam</span>
+              <span className="font-display font-bold text-forest-700 text-lg leading-none block">Varagan</span>
               <span className="text-xs text-gray-400 font-body leading-none">Real Estate</span>
             </div>
           </Link>
@@ -94,7 +94,7 @@ export default function PublicLayout() {
         <div className="page-container">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="font-display text-xl text-white mb-2">Varagam</h3>
+              <h3 className="font-display text-xl text-white mb-2">Varagan</h3>
               <p className="text-sm text-forest-300">Tamil Nadu's trusted land marketplace. Direct. Transparent. No commission.</p>
             </div>
             <div>
@@ -107,14 +107,15 @@ export default function PublicLayout() {
             </div>
             <div>
               <h4 className="font-medium text-white mb-3">Contact</h4>
-              <p className="text-sm text-forest-300">admin@varagam.in<br/>Tamil Nadu, India</p>
+              <p className="text-sm text-forest-300">admin@Varagan.in<br/>Tamil Nadu, India</p>
             </div>
           </div>
           <div className="border-t border-forest-700 mt-8 pt-6 text-center text-xs text-forest-400">
-            © {new Date().getFullYear()} Varagam Real Estate. All rights reserved.
+            © {new Date().getFullYear()} Varagan Real Estate. All rights reserved.
           </div>
         </div>
       </footer>
     </div>
   )
 }
+

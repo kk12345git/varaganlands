@@ -16,7 +16,7 @@ export function LoginPage() {
     try {
       let email = form.email.trim()
       if (email.toLowerCase() === 'varagan realestate') {
-        email = 'admin@varagam.in'
+        email = 'admin@Varagan.in'
       }
       await signIn({ email, password: form.password })
       toast.success('Welcome back!')
@@ -41,7 +41,7 @@ export function LoginPage() {
             <span className="font-display font-bold text-white text-xl">V</span>
           </div>
           <h1 className="font-display text-3xl font-bold text-gray-900">Welcome back</h1>
-          <p className="text-gray-500 mt-1 font-body">Sign in to your Varagam account</p>
+          <p className="text-gray-500 mt-1 font-body">Sign in to your Varagan account</p>
         </div>
 
         <div className="card p-8">
@@ -147,3 +147,4 @@ export function RegisterPage() {
 }
 
 export default LoginPage
+

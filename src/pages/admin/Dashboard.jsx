@@ -32,7 +32,7 @@ export default function AdminDashboard() {
     <div className="space-y-8 animate-fade-in">
       <div>
         <h1 className="font-display text-2xl md:text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-        <p className="text-gray-500 mt-1">Varagam Real Estate Control Panel</p>
+        <p className="text-gray-500 mt-1">Varagan Real Estate Control Panel</p>
       </div>
 
       {/* Stats */}
@@ -125,3 +125,4 @@ export default function AdminDashboard() {
     </div>
   )
 }
+

@@ -156,10 +156,10 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* Why Varagam */}
+      {/* Why Varagan */}
       <section className="bg-clay py-14">
         <div className="page-container">
-          <h2 className="section-heading text-center mb-10">Why Varagam?</h2>
+          <h2 className="section-heading text-center mb-10">Why Varagan?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               { icon: <ShieldCheck className="text-forest-600" size={28}/>, title: 'Verified Listings', desc: 'Every listing is reviewed by our admin team before going live.' },
@@ -189,3 +189,4 @@ export default function HomePage() {
     </div>
   )
 }
+

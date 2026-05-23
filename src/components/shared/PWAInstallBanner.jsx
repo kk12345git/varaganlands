@@ -15,7 +15,7 @@ export default function PWAInstallBanner() {
           <Smartphone size={18}/>
         </div>
         <div className="flex-1">
-          <p className="font-medium text-sm">Install Varagam App</p>
+          <p className="font-medium text-sm">Install Varagan App</p>
           <p className="text-xs text-forest-300 mt-0.5">Works offline · Add to home screen</p>
           <button onClick={install}
             className="flex items-center gap-1.5 mt-2 bg-earth-500 hover:bg-earth-600 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition">
@@ -30,3 +30,4 @@ export default function PWAInstallBanner() {
     </div>
   )
 }
+

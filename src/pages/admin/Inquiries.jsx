@@ -102,7 +102,7 @@ export default function AdminInquiries() {
                       className="flex items-center gap-1 py-1.5 px-3 bg-forest-600 text-white rounded-lg text-xs font-medium hover:bg-forest-700 transition">
                       <Phone size={12}/>{inq.buyer_phone}
                     </a>
-                    <a href={`https://wa.me/${inq.buyer_phone?.replace(/\D/g,'')}?text=${encodeURIComponent(`Hi ${inq.buyer_name}, regarding your inquiry about "${inq.listings?.title}" on Varagam.`)}`}
+                    <a href={`https://wa.me/${inq.buyer_phone?.replace(/\D/g,'')}?text=${encodeURIComponent(`Hi ${inq.buyer_name}, regarding your inquiry about "${inq.listings?.title}" on Varagan.`)}`}
                       target="_blank" rel="noreferrer"
                       className="flex items-center gap-1 py-1.5 px-2 bg-green-500 text-white rounded-lg text-xs font-medium hover:bg-green-600 transition">
                       <MessageCircle size={12}/>WA
@@ -123,3 +123,4 @@ export default function AdminInquiries() {
     </div>
   )
 }
+

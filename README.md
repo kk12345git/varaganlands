@@ -1,4 +1,4 @@
-# 🏡 Varagam Real Estate
+# 🏡 Varagan Real Estate
 
 > Tamil Nadu's trusted land marketplace — direct seller to buyer, no commission.
 
@@ -20,8 +20,8 @@
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/yourname/varagam.git
-cd varagam
+git clone https://github.com/yourname/Varagan.git
+cd Varagan
 npm install
 ```
 
@@ -43,7 +43,7 @@ Required:
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your_anon_key
 VITE_ADMIN_WHATSAPP=919876543210
-VITE_ADMIN_EMAIL=admin@varagam.in
+VITE_ADMIN_EMAIL=admin@Varagan.in
 ```
 
 ### 4. Make Yourself Admin
@@ -73,7 +73,7 @@ npm run preview
 ## 📁 Project Structure
 
 ```
-varagam/
+Varagan/
 ├── public/
 │   ├── icons/          # PWA icons (generate at realfavicongenerator.net)
 │   └── robots.txt
@@ -177,3 +177,4 @@ Buyer sends inquiry
 ---
 
 Made with ❤️ for Tamil Nadu farmers and land owners.
+

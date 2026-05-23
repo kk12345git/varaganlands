@@ -1,5 +1,5 @@
 -- ============================================================
--- VARAGAM REAL ESTATE — Supabase Schema
+-- Varagan REAL ESTATE — Supabase Schema
 -- Run this in Supabase SQL Editor (Dashboard > SQL Editor)
 -- ============================================================
 
@@ -181,3 +181,4 @@ create policy "Owner delete" on storage.objects for delete
 -- ─── MAKE FIRST USER ADMIN ───────────────────────────────────────────────────
 -- After signup, run this to make yourself admin:
 -- update public.profiles set role = 'admin' where id = '<your-user-uuid>';
+

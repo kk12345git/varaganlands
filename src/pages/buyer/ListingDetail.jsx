@@ -37,7 +37,7 @@ export default function ListingDetail() {
   const callSeller = () => { window.open(`tel:${listing.profiles?.phone}`) }
   const whatsappSeller = () => {
     const phone = listing.profiles?.whatsapp || listing.profiles?.phone
-    const msg = encodeURIComponent(`Hi, I'm interested in your land listing: "${listing.title}" on Varagam.`)
+    const msg = encodeURIComponent(`Hi, I'm interested in your land listing: "${listing.title}" on Varagan.`)
     window.open(`https://wa.me/${phone?.replace(/\D/g,'')}?text=${msg}`, '_blank')
   }
 
@@ -233,3 +233,4 @@ export default function ListingDetail() {
     </div>
   )
 }
+

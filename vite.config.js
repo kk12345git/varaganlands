@@ -9,8 +9,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'robots.txt', 'icons/*.png'],
       manifest: {
-        name: 'Varagam Real Estate',
-        short_name: 'Varagam',
+        name: 'Varagan Real Estate',
+        short_name: 'Varagan',
         description: 'Buy and Sell Land - Tamil Nadu\'s Trusted Real Estate Platform',
         theme_color: '#1a6b3c',
         background_color: '#ffffff',
@@ -42,3 +42,4 @@ export default defineConfig({
     alias: { '@': '/src' }
   }
 })
+

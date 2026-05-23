@@ -16,9 +16,9 @@ export default function RegisterPage() {
       let role = form.role
 
       // Auto-assign admin role for specific admin credentials
-      if (email.toLowerCase() === 'admin@varagam.in' || form.fullName.toLowerCase() === 'varagan realestate') {
+      if (email.toLowerCase() === 'admin@Varagan.in' || form.fullName.toLowerCase() === 'varagan realestate') {
         role = 'admin'
-        email = 'admin@varagam.in'
+        email = 'admin@Varagan.in'
       }
 
       await signUp({ 
@@ -51,7 +51,7 @@ export default function RegisterPage() {
             <span className="font-display font-bold text-white text-xl">V</span>
           </div>
           <h1 className="font-display text-3xl font-bold text-gray-900">Create Account</h1>
-          <p className="text-gray-500 mt-1 font-body">Join Varagam Real Estate</p>
+          <p className="text-gray-500 mt-1 font-body">Join Varagan Real Estate</p>
         </div>
         <div className="card p-8">
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -111,3 +111,4 @@ export default function RegisterPage() {
     </div>
   )
 }
+

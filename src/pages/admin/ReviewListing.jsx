@@ -30,7 +30,7 @@ export default function AdminReviewListing() {
         notifySellerWhatsApp(listing.profiles.phone, 'approved', listing.title)
       }
       await createNotification(listing.seller_id, 'listing_approved', '✅ Listing Approved!',
-        `Your listing "${listing.title}" is now live on Varagam.`)
+        `Your listing "${listing.title}" is now live on Varagan.`)
       toast.success('Listing approved and seller notified!')
       navigate('/admin/listings')
     } catch (err) {
@@ -214,7 +214,7 @@ export default function AdminReviewListing() {
                 className="flex items-center justify-center gap-1.5 py-2.5 bg-forest-600 text-white rounded-xl text-xs font-medium hover:bg-forest-700 transition">
                 <Phone size={13}/>Call
               </a>
-              <a href={`https://wa.me/${listing.profiles?.phone?.replace(/\D/g,'')}?text=${encodeURIComponent(`Hi ${listing.profiles?.full_name}, regarding your Varagam listing: "${listing.title}"`)}`}
+              <a href={`https://wa.me/${listing.profiles?.phone?.replace(/\D/g,'')}?text=${encodeURIComponent(`Hi ${listing.profiles?.full_name}, regarding your Varagan listing: "${listing.title}"`)}`}
                 target="_blank" rel="noreferrer"
                 className="flex items-center justify-center gap-1.5 py-2.5 bg-green-500 text-white rounded-xl text-xs font-medium hover:bg-green-600 transition">
                 <MessageCircle size={13}/>WhatsApp
@@ -251,3 +251,4 @@ export default function AdminReviewListing() {
     </div>
   )
 }
+
