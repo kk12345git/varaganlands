@@ -4,7 +4,7 @@ import { useAuthStore } from '../store/authStore'
 import toast from 'react-hot-toast'
 
 export default function RegisterPage() {
-  const [form, setForm] = useState({ fullName:'', phone:'', email:'', password:'' })
+  const [form, setForm] = useState({ fullName:'', phone:'', email:'', password:'', role:'seller' })
   const [loading, setLoading] = useState(false)
   const { signUp } = useAuthStore()
   const navigate = useNavigate()
@@ -12,9 +12,32 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true)
     try {
-      await signUp({ email: form.email, password: form.password, fullName: form.fullName, phone: form.phone })
-      toast.success('Account created! Check email to verify.')
-      navigate('/seller')
+      let email = form.email.trim()
+      let role = form.role
+
+      // Auto-assign admin role for specific admin credentials
+      if (email.toLowerCase() === 'admin@varagam.in' || form.fullName.toLowerCase() === 'varagan realestate') {
+        role = 'admin'
+        email = 'admin@varagam.in'
+      }
+
+      await signUp({ 
+        email, 
+        password: form.password, 
+        fullName: form.fullName, 
+        phone: form.phone, 
+        role 
+      })
+
+      toast.success(role === 'admin' ? 'Admin account created! 🎉' : 'Account created! Check email to verify.')
+      
+      if (role === 'admin') {
+        navigate('/admin')
+      } else if (role === 'seller') {
+        navigate('/seller')
+      } else {
+        navigate('/')
+      }
     } catch (err) {
       toast.error(err.message)
     } finally { setLoading(false) }
@@ -27,11 +50,34 @@ export default function RegisterPage() {
           <div className="w-12 h-12 bg-forest-600 rounded-xl flex items-center justify-center mx-auto mb-4">
             <span className="font-display font-bold text-white text-xl">V</span>
           </div>
-          <h1 className="font-display text-3xl font-bold text-gray-900">Start selling</h1>
-          <p className="text-gray-500 mt-1 font-body">Create your free seller account</p>
+          <h1 className="font-display text-3xl font-bold text-gray-900">Create Account</h1>
+          <p className="text-gray-500 mt-1 font-body">Join Varagam Real Estate</p>
         </div>
         <div className="card p-8">
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="label">I want to / நான்...</label>
+              <div className="grid grid-cols-2 gap-3 mb-2">
+                <button
+                  type="button"
+                  onClick={() => setForm(f => ({ ...f, role: 'seller' }))}
+                  className={`p-3 rounded-xl border-2 text-center transition font-body font-medium flex flex-col items-center justify-center
+                    ${form.role === 'seller' ? 'border-forest-500 bg-forest-50 text-forest-700' : 'border-gray-100 hover:border-gray-200 text-gray-500'}`}
+                >
+                  <span className="text-lg mb-1">🌾</span>
+                  <span className="text-xs sm:text-sm">Sell Land / விற்க</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setForm(f => ({ ...f, role: 'buyer' }))}
+                  className={`p-3 rounded-xl border-2 text-center transition font-body font-medium flex flex-col items-center justify-center
+                    ${form.role === 'buyer' ? 'border-forest-500 bg-forest-50 text-forest-700' : 'border-gray-100 hover:border-gray-200 text-gray-500'}`}
+                >
+                  <span className="text-lg mb-1">🔍</span>
+                  <span className="text-xs sm:text-sm">Buy Land / வாங்க</span>
+                </button>
+              </div>
+            </div>
             <div>
               <label className="label">Full Name / பெயர்</label>
               <input required className="input" placeholder="உங்கள் பெயர்"

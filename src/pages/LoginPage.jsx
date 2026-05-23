@@ -8,16 +8,26 @@ export function LoginPage() {
   const [form, setForm]     = useState({ email:'', password:'' })
   const [showPw, setShowPw] = useState(false)
   const [loading, setLoading] = useState(false)
-  const { signIn, profile }   = useAuthStore()
+  const { signIn }   = useAuthStore()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true)
     try {
-      await signIn(form)
+      let email = form.email.trim()
+      if (email.toLowerCase() === 'varagan realestate') {
+        email = 'admin@varagam.in'
+      }
+      await signIn({ email, password: form.password })
       toast.success('Welcome back!')
       const p = useAuthStore.getState().profile
-      navigate(p?.role === 'admin' ? '/admin' : '/seller')
+      if (p?.role === 'admin') {
+        navigate('/admin')
+      } else if (p?.role === 'seller') {
+        navigate('/seller')
+      } else {
+        navigate('/')
+      }
     } catch (err) {
       toast.error(err.message)
     } finally { setLoading(false) }
@@ -37,8 +47,8 @@ export function LoginPage() {
         <div className="card p-8">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="label">Email</label>
-              <input type="email" required className="input" placeholder="you@example.com"
+              <label className="label">Email or Username / பயனர் பெயர்</label>
+              <input type="text" required className="input" placeholder="you@example.com or Varagan Realestate"
                 value={form.email} onChange={e=>setForm(f=>({...f,email:e.target.value}))}/>
             </div>
             <div>
