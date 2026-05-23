@@ -1,11 +1,18 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import toast from 'react-hot-toast'
 import { Eye, EyeOff } from 'lucide-react'
 
 export function LoginPage() {
-  const [form, setForm]     = useState({ email:'', password:'' })
+  const location = useLocation()
+  const queryParams = new URLSearchParams(location.search)
+  const isAdminPrefill = queryParams.get('admin') === 'true'
+
+  const [form, setForm]     = useState({ 
+    email: isAdminPrefill ? 'Varagan Realestate' : '', 
+    password: '' 
+  })
   const [showPw, setShowPw] = useState(false)
   const [loading, setLoading] = useState(false)
   const { signIn }   = useAuthStore()

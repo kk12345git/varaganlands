@@ -51,6 +51,7 @@ export default function PublicLayout() {
             ) : (
               <>
                 <Link to="/login" className="text-sm font-medium text-gray-600 hover:text-forest-600">Sign In</Link>
+                <Link to="/login?admin=true" className="text-sm font-medium text-gray-600 hover:text-forest-600">Admin</Link>
                 <Link to="/register" className="btn-primary py-2 px-4 text-sm">List Your Land</Link>
               </>
             )}
@@ -76,6 +77,7 @@ export default function PublicLayout() {
               ) : (
                 <>
                   <Link to="/login" onClick={()=>setOpen(false)} className="flex items-center gap-2 text-sm font-medium text-gray-700 py-2"><LogIn size={16}/>Sign In</Link>
+                  <Link to="/login?admin=true" onClick={()=>setOpen(false)} className="flex items-center gap-2 text-sm font-medium text-gray-700 py-2"><LogIn size={16}/>Admin</Link>
                   <Link to="/register" onClick={()=>setOpen(false)} className="btn-primary text-sm text-center">List Your Land</Link>
                 </>
               )}
