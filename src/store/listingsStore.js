@@ -1,0 +1,149 @@
+import { create } from 'zustand'
+import { supabase, uploadListingImage } from '../lib/supabase'
+
+export const useListingsStore = create((set, get) => ({
+  listings:        [],
+  myListings:      [],
+  pendingListings: [],
+  currentListing:  null,
+  loading:         false,
+  error:           null,
+  filters: {
+    district:  '',
+    land_type: '',
+    min_price: '',
+    max_price: '',
+    min_area:  '',
+    max_area:  '',
+  },
+
+  // ── Public: approved listings ──────────────────────────────────────────────
+  fetchApproved: async (filters = {}) => {
+    set({ loading: true, error: null })
+    let q = supabase
+      .from('listings')
+      .select('*, profiles(full_name, phone, whatsapp)')
+      .eq('status', 'approved')
+      .order('created_at', { ascending: false })
+
+    if (filters.district)  q = q.eq('district', filters.district)
+    if (filters.land_type) q = q.eq('land_type', filters.land_type)
+    if (filters.min_price) q = q.gte('price', Number(filters.min_price))
+    if (filters.max_price) q = q.lte('price', Number(filters.max_price))
+
+    const { data, error } = await q
+    if (error) { set({ error: error.message, loading: false }); return }
+    set({ listings: data || [], loading: false })
+  },
+
+  fetchById: async (id) => {
+    set({ loading: true })
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*, profiles(full_name, phone, whatsapp, avatar_url)')
+      .eq('id', id)
+      .single()
+    if (error) { set({ error: error.message, loading: false }); return }
+    set({ currentListing: data, loading: false })
+    return data
+  },
+
+  // ── Seller: own listings ───────────────────────────────────────────────────
+  fetchMyListings: async (sellerId) => {
+    set({ loading: true })
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*')
+      .eq('seller_id', sellerId)
+      .order('created_at', { ascending: false })
+    if (error) { set({ error: error.message, loading: false }); return }
+    set({ myListings: data || [], loading: false })
+  },
+
+  createListing: async (formData, imageFiles, sellerId) => {
+    set({ loading: true })
+    // Insert listing first to get ID
+    const { data: listing, error } = await supabase
+      .from('listings')
+      .insert({ ...formData, seller_id: sellerId, status: 'pending' })
+      .select()
+      .single()
+    if (error) { set({ loading: false }); throw error }
+
+    // Upload images
+    const imageUrls = []
+    for (const file of imageFiles) {
+      const url = await uploadListingImage(file, listing.id)
+      imageUrls.push(url)
+    }
+
+    // Update with image URLs
+    if (imageUrls.length > 0) {
+      await supabase.from('listings').update({ images: imageUrls }).eq('id', listing.id)
+      listing.images = imageUrls
+    }
+
+    set((s) => ({ myListings: [listing, ...s.myListings], loading: false }))
+    return listing
+  },
+
+  updateListing: async (id, updates) => {
+    const { data, error } = await supabase.from('listings').update(updates).eq('id', id).select().single()
+    if (error) throw error
+    set((s) => ({
+      myListings: s.myListings.map(l => l.id === id ? data : l),
+      listings:   s.listings.map(l => l.id === id ? data : l),
+    }))
+    return data
+  },
+
+  deleteListing: async (id) => {
+    const { error } = await supabase.from('listings').delete().eq('id', id)
+    if (error) throw error
+    set((s) => ({
+      myListings: s.myListings.filter(l => l.id !== id),
+      listings:   s.listings.filter(l => l.id !== id),
+    }))
+  },
+
+  // ── Admin ──────────────────────────────────────────────────────────────────
+  fetchPending: async () => {
+    set({ loading: true })
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*, profiles(full_name, phone)')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: true })
+    if (error) { set({ loading: false }); return }
+    set({ pendingListings: data || [], loading: false })
+  },
+
+  fetchAll: async () => {
+    set({ loading: true })
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*, profiles(full_name, phone)')
+      .order('created_at', { ascending: false })
+    if (error) { set({ loading: false }); return }
+    set({ listings: data || [], loading: false })
+  },
+
+  approveListing: async (id, adminId) => {
+    return await get().updateListing(id, {
+      status: 'approved',
+      reviewed_by: adminId,
+      reviewed_at: new Date().toISOString(),
+    })
+  },
+
+  rejectListing: async (id, adminId, reason) => {
+    return await get().updateListing(id, {
+      status: 'rejected',
+      reviewed_by: adminId,
+      reviewed_at: new Date().toISOString(),
+      rejection_reason: reason,
+    })
+  },
+
+  setFilters: (filters) => set((s) => ({ filters: { ...s.filters, ...filters } })),
+}))
