@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import { Upload, X, Image as ImageIcon } from 'lucide-react'
 
-export default function ImageUpload({ onFilesChange, maxFiles = 8, existingImages = [] }) {
+export default function ImageUpload({ onFilesChange, onImagesChange, maxFiles = 8, existingImages = [] }) {
   const [previews, setPreviews] = useState(existingImages.map(url => ({ url, file: null })))
   const inputRef = useRef()
 
@@ -16,13 +16,15 @@ export default function ImageUpload({ onFilesChange, maxFiles = 8, existingImage
     }))
     const updated = [...previews, ...newPreviews]
     setPreviews(updated)
-    onFilesChange(updated.map(p => p.file).filter(Boolean))
+    if (onFilesChange) onFilesChange(updated.map(p => p.file).filter(Boolean))
+    if (onImagesChange) onImagesChange(updated)
   }
 
   const removeImage = (idx) => {
     const updated = previews.filter((_, i) => i !== idx)
     setPreviews(updated)
-    onFilesChange(updated.map(p => p.file).filter(Boolean))
+    if (onFilesChange) onFilesChange(updated.map(p => p.file).filter(Boolean))
+    if (onImagesChange) onImagesChange(updated)
   }
 
   const handleDrop = (e) => {

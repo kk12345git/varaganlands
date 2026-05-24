@@ -20,6 +20,7 @@ export function LoginPage() {
       const role = profile?.role || useAuthStore.getState().profile?.role
       if (role === 'admin') navigate('/admin', { replace: true })
       else if (role === 'seller') navigate('/seller', { replace: true })
+      else navigate('/', { replace: true })
     }
   }, [user, profile, navigate])
 

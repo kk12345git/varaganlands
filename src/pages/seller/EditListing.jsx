@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { useListingsStore } from '../../store/listingsStore'
+import { uploadListingImage } from '../../lib/supabase'
 import { TN_DISTRICTS, LAND_TYPES, AREA_UNITS, WATER_SOURCES } from '../../lib/constants'
 import MapPicker from '../../components/ui/MapPicker'
 import ImageUpload from '../../components/ui/ImageUpload'
@@ -14,7 +15,8 @@ export default function EditListing() {
   const { user } = useAuthStore()
   const { fetchById, updateListing, loading } = useListingsStore()
   const [form, setForm] = useState(null)
-  const [newImages, setNewImages] = useState([])
+  const [imagesState, setImagesState] = useState([])
+  const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
     fetchById(id).then(l => {
@@ -26,6 +28,7 @@ export default function EditListing() {
           price: l.original_price || l.price,
           price_per_unit: l.original_price_per_unit || l.price_per_unit,
         })
+        setImagesState((l.images || []).map(url => ({ url, file: null })))
       } else {
         toast.error('Access denied')
         navigate('/seller/listings')
@@ -43,7 +46,22 @@ export default function EditListing() {
   const toggle = (key) => setForm(f => ({ ...f, [key]: !f[key] }))
 
   const handleSave = async () => {
+    setSubmitting(true)
     try {
+      // 1. Separate existing images to keep vs new files to upload
+      const existingKeep = imagesState.filter(p => !p.file).map(p => p.url)
+      const newFiles = imagesState.filter(p => p.file).map(p => p.file)
+
+      // 2. Upload new files to Supabase storage
+      const uploadedUrls = []
+      for (const file of newFiles) {
+        const url = await uploadListingImage(file, id)
+        uploadedUrls.push(url)
+      }
+
+      // 3. Combine both lists
+      const finalImages = [...existingKeep, ...uploadedUrls]
+
       const updates = {
         title: form.title,
         description: form.description,
@@ -64,6 +82,7 @@ export default function EditListing() {
         water_source: form.water_source,
         electricity: form.electricity,
         patta_available: form.patta_available,
+        images: finalImages,
         status: 'pending', // re-submit for review on edit
         original_title: form.title,
         original_description: form.description,
@@ -75,6 +94,8 @@ export default function EditListing() {
       navigate('/seller/listings')
     } catch (err) {
       toast.error(err.message)
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -191,12 +212,12 @@ export default function EditListing() {
 
       <div className="card p-6">
         <h2 className="font-semibold text-gray-700 mb-4">Photos</h2>
-        <ImageUpload onFilesChange={setNewImages} maxFiles={8} existingImages={form.images||[]}/>
+        <ImageUpload onImagesChange={setImagesState} maxFiles={8} existingImages={form.images||[]}/>
       </div>
 
-      <button onClick={handleSave} disabled={loading}
+      <button onClick={handleSave} disabled={loading || submitting}
         className="btn-primary w-full flex items-center justify-center gap-2 py-4 text-base">
-        {loading
+        {(loading || submitting)
           ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"/>Saving...</>
           : <><Save size={18}/>Save & Resubmit</>
         }

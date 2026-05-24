@@ -160,8 +160,9 @@ create policy "Buyers see approved" on public.listings for select
 create policy "Sellers insert own" on public.listings for insert
   with check (auth.uid() = seller_id);
 
-create policy "Sellers update own pending" on public.listings for update
-  using (auth.uid() = seller_id and status = 'pending');
+create policy "Sellers update own" on public.listings for update
+  using (auth.uid() = seller_id)
+  with check (auth.uid() = seller_id and status in ('pending', 'sold'));
 
 create policy "Admins full access" on public.listings for all
   using (exists (select 1 from profiles where id = auth.uid() and role = 'admin'));
