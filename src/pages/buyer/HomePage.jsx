@@ -3,15 +3,19 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Search, MapPin, TrendingUp, ShieldCheck, Smartphone, ArrowRight } from 'lucide-react'
 import { useListingsStore } from '../../store/listingsStore'
 import { useTranslation } from '../../hooks/useTranslation'
+import { useAuthStore } from '../../store/authStore'
 import { TN_DISTRICTS, LAND_TYPES } from '../../lib/constants'
 import ListingCard from '../../components/buyer/ListingCard'
 
 export default function HomePage() {
   const { listings, fetchApproved, loading } = useListingsStore()
   const { t } = useTranslation()
+  const { user, profile } = useAuthStore()
   const [district, setDistrict] = useState('')
   const [landType, setLandType] = useState('')
   const navigate = useNavigate()
+
+  const registerPath = user ? (profile?.role === 'admin' ? '/admin' : '/seller/listings/new') : '/register'
 
   useEffect(() => { fetchApproved() }, [])
 
@@ -146,7 +150,7 @@ export default function HomePage() {
             <div className="text-5xl mb-4">🏡</div>
             <p className="font-display text-xl">{t('no_listings_yet')}</p>
             <p className="text-sm mt-2">{t('be_first_to_list')}</p>
-            <Link to="/register" className="btn-primary inline-flex mt-6">{t('register')}</Link>
+            <Link to={registerPath} className="btn-primary inline-flex mt-6">{t('register')}</Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -181,7 +185,7 @@ export default function HomePage() {
         <p className="text-gray-500 mb-8 font-body max-w-md mx-auto">
           {t('cta_desc')}
         </p>
-        <Link to="/register" className="btn-primary inline-flex items-center gap-2 text-base px-8 py-4">
+        <Link to={registerPath} className="btn-primary inline-flex items-center gap-2 text-base px-8 py-4">
           {t('cta_btn')} <ArrowRight size={18}/>
         </Link>
       </section>

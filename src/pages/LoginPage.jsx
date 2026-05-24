@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { useTranslation } from '../hooks/useTranslation'
@@ -12,6 +12,16 @@ export function LoginPage() {
   const isAdminPrefill = queryParams.get('admin') === 'true'
   const { t } = useTranslation()
   const tiltRef = use3DTilt(4, 1000) // gentle tilt
+  const { user, profile, signIn } = useAuthStore()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (user) {
+      const role = profile?.role || useAuthStore.getState().profile?.role
+      if (role === 'admin') navigate('/admin', { replace: true })
+      else if (role === 'seller') navigate('/seller', { replace: true })
+    }
+  }, [user, profile, navigate])
 
   const [form, setForm]     = useState({ 
     email: isAdminPrefill ? 'Varagan Realestate' : '', 
@@ -19,8 +29,6 @@ export function LoginPage() {
   })
   const [showPw, setShowPw] = useState(false)
   const [loading, setLoading] = useState(false)
-  const { signIn }   = useAuthStore()
-  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true)

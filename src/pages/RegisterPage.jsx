@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { useTranslation } from '../hooks/useTranslation'
@@ -6,12 +6,21 @@ import { use3DTilt } from '../hooks/use3DTilt'
 import toast from 'react-hot-toast'
 
 export default function RegisterPage() {
+  const { user, profile, signUp } = useAuthStore()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (user) {
+      const role = profile?.role || useAuthStore.getState().profile?.role
+      if (role === 'admin') navigate('/admin', { replace: true })
+      else if (role === 'seller') navigate('/seller', { replace: true })
+    }
+  }, [user, profile, navigate])
+
   const [form, setForm] = useState({ fullName:'', phone:'', email:'', password:'', role:'seller' })
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
   const tiltRef = use3DTilt(4, 1000)
-  const { signUp } = useAuthStore()
-  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true)

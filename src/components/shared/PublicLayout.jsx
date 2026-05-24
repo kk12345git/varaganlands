@@ -18,6 +18,7 @@ export default function PublicLayout() {
   }
 
   const dashPath = profile?.role === 'admin' ? '/admin' : '/seller'
+  const registerPath = user ? (profile?.role === 'admin' ? '/admin' : '/seller/listings/new') : '/register'
 
   const LanguageSelector = () => (
     <div className="flex items-center gap-1">
@@ -126,7 +127,7 @@ export default function PublicLayout() {
               <h4 className="font-medium text-white mb-3 font-display">{t('quick_links')}</h4>
               <div className="flex flex-col gap-2 text-sm text-forest-300 font-body">
                 <Link to="/listings" className="hover:text-white transition">{t('browse')}</Link>
-                <Link to="/register" className="hover:text-white transition">{t('register')}</Link>
+                <Link to={registerPath} className="hover:text-white transition">{t('register')}</Link>
                 <Link to="/login"    className="hover:text-white transition">{t('signIn')}</Link>
               </div>
             </div>

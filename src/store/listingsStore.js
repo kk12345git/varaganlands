@@ -78,6 +78,9 @@ export const useListingsStore = create((set, get) => ({
 
     const listingData = {
       ...formData,
+      price: Number(formData.price),
+      price_per_unit: formData.price_per_unit ? Number(formData.price_per_unit) : null,
+      area_value: Number(formData.area_value),
       seller_id: sellerId,
       status: 'pending',
       original_title: formData.title,

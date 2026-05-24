@@ -45,7 +45,25 @@ export default function EditListing() {
   const handleSave = async () => {
     try {
       const updates = {
-        ...form,
+        title: form.title,
+        description: form.description,
+        land_type: form.land_type,
+        district: form.district,
+        taluk: form.taluk,
+        village: form.village,
+        address: form.address,
+        survey_number: form.survey_number,
+        latitude: form.latitude,
+        longitude: form.longitude,
+        area_value: Number(form.area_value),
+        area_unit: form.area_unit,
+        price: Number(form.price),
+        price_per_unit: form.price_per_unit ? Number(form.price_per_unit) : null,
+        price_negotiable: form.price_negotiable,
+        road_access: form.road_access,
+        water_source: form.water_source,
+        electricity: form.electricity,
+        patta_available: form.patta_available,
         status: 'pending', // re-submit for review on edit
         original_title: form.title,
         original_description: form.description,
