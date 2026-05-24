@@ -1,15 +1,17 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { MapPin, Maximize2, IndianRupee, Droplets, Zap, CheckCircle } from 'lucide-react'
+import { use3DTilt } from '../../hooks/use3DTilt'
 import { formatPrice, formatArea, LAND_TYPES, STATUS_COLORS, STATUS_LABELS } from '../../lib/constants'
 
 export default function ListingCard({ listing, showStatus = false }) {
+  const tiltRef = use3DTilt(6, 900)
   const landType = LAND_TYPES.find(t => t.value === listing.land_type)
   const coverImage = listing.images?.[0]
 
   return (
     <Link to={`/listings/${listing.id}`} className="block">
-      <div className="card-hover group">
+      <div ref={tiltRef} className="card-hover group">
         {/* Image */}
         <div className="relative h-48 bg-gray-100 overflow-hidden">
           {coverImage ? (
