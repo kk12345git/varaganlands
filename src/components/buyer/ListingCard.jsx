@@ -2,16 +2,18 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { MapPin, Maximize2, IndianRupee, Droplets, Zap, CheckCircle } from 'lucide-react'
 import { use3DTilt } from '../../hooks/use3DTilt'
+import { useTranslation } from '../../hooks/useTranslation'
 import { formatPrice, formatArea, LAND_TYPES, STATUS_COLORS, STATUS_LABELS } from '../../lib/constants'
 
 export default function ListingCard({ listing, showStatus = false }) {
   const tiltRef = use3DTilt(6, 900)
+  const { t } = useTranslation()
   const landType = LAND_TYPES.find(t => t.value === listing.land_type)
   const coverImage = listing.images?.[0]
 
   return (
     <Link to={`/listings/${listing.id}`} className="block">
-      <div ref={tiltRef} className="card-hover group">
+      <div ref={tiltRef} className="card-hover group font-display">
         {/* Image */}
         <div className="relative h-48 bg-gray-100 overflow-hidden">
           {coverImage ? (
@@ -24,11 +26,11 @@ export default function ListingCard({ listing, showStatus = false }) {
           )}
           {/* Land type badge */}
           <span className="absolute top-3 left-3 bg-white/90 backdrop-blur text-xs font-medium px-2.5 py-1 rounded-full text-forest-700 shadow-sm">
-            {landType?.icon} {landType?.label?.split('/')[0].trim()}
+            {landType?.icon} {landType ? t(landType.value) : ''}
           </span>
           {listing.featured && (
             <span className="absolute top-3 right-3 bg-earth-500 text-white text-xs font-medium px-2.5 py-1 rounded-full">
-              ⭐ Featured
+              ⭐ {t('featured')}
             </span>
           )}
           {showStatus && (
@@ -50,7 +52,7 @@ export default function ListingCard({ listing, showStatus = false }) {
           </div>
 
           {/* Stats row */}
-          <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
+          <div className="flex items-center gap-3 text-xs text-gray-500 mb-3 font-body">
             <span className="flex items-center gap-1">
               <Maximize2 size={12}/>
               {formatArea(listing.area_value, listing.area_unit)}
@@ -68,7 +70,7 @@ export default function ListingCard({ listing, showStatus = false }) {
             )}
             {listing.patta_available && (
               <span className="flex items-center gap-1 text-green-600">
-                <CheckCircle size={12}/>Patta
+                <CheckCircle size={12}/>{t('patta')}
               </span>
             )}
           </div>
@@ -87,7 +89,7 @@ export default function ListingCard({ listing, showStatus = false }) {
               )}
             </div>
             {listing.price_negotiable && (
-              <span className="text-xs text-earth-600 bg-earth-50 px-2 py-1 rounded-lg">Negotiable</span>
+              <span className="text-xs text-earth-600 bg-earth-50 px-2 py-1 rounded-lg">{t('negotiable')}</span>
             )}
           </div>
         </div>

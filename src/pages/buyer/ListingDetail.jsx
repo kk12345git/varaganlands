@@ -70,8 +70,8 @@ export default function ListingDetail() {
   return (
     <div className="page-container py-6 md:py-10">
       {/* Back */}
-      <Link to="/listings" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-forest-600 mb-6 transition">
-        <ChevronLeft size={16}/>Back to Listings
+      <Link to="/listings" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-forest-600 mb-6 transition font-body">
+        <ChevronLeft size={16}/>{t('back_to_listings')}
       </Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -107,7 +107,7 @@ export default function ListingDetail() {
                 {listing.title}
               </h1>
               <span className="badge border-forest-200 bg-forest-50 text-forest-700 whitespace-nowrap">
-                {landType?.icon} {landType?.label?.split('/')[0].trim()}
+                {landType?.icon} {landType ? t(landType.value) : ''}
               </span>
             </div>
 
@@ -117,22 +117,22 @@ export default function ListingDetail() {
             </div>
 
             {listing.survey_number && (
-              <p className="text-sm text-gray-500 mb-4">Survey No: <span className="font-mono font-medium text-gray-700">{listing.survey_number}</span></p>
+              <p className="text-sm text-gray-500 mb-4">{t('survey_no')}: <span className="font-mono font-medium text-gray-700">{listing.survey_number}</span></p>
             )}
 
             {/* Key stats */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 bg-smoke rounded-xl p-4 mb-4">
               <div>
-                <p className="text-xs text-gray-400 mb-0.5">Total Area</p>
+                <p className="text-xs text-gray-400 mb-0.5">{t('total_area')}</p>
                 <p className="font-display font-semibold text-gray-800">{formatArea(listing.area_value, listing.area_unit)}</p>
               </div>
               <div>
-                <p className="text-xs text-gray-400 mb-0.5">Total Price</p>
+                <p className="text-xs text-gray-400 mb-0.5">{t('total_price')}</p>
                 <p className="font-display font-semibold text-forest-700">{formatPrice(listing.price)}</p>
               </div>
               {listing.price_per_unit && (
                 <div>
-                  <p className="text-xs text-gray-400 mb-0.5">Per {listing.area_unit}</p>
+                  <p className="text-xs text-gray-400 mb-0.5">{t('per_unit')} ({listing.area_unit})</p>
                   <p className="font-display font-semibold text-gray-800">{formatPrice(listing.price_per_unit)}</p>
                 </div>
               )}
@@ -140,23 +140,23 @@ export default function ListingDetail() {
 
             {/* Features */}
             <div className="flex flex-wrap gap-2 mb-4">
-              {listing.road_access && <span className="badge border-forest-200 bg-forest-50 text-forest-700">🛣️ Road Access</span>}
-              {listing.electricity  && <span className="badge border-amber-200 bg-amber-50 text-amber-700"><Zap size={11}/>Electricity</span>}
-              {listing.patta_available && <span className="badge border-blue-200 bg-blue-50 text-blue-700"><FileText size={11}/>Patta Available</span>}
+              {listing.road_access && <span className="badge border-forest-200 bg-forest-50 text-forest-700">🛣️ {t('road_access')}</span>}
+              {listing.electricity  && <span className="badge border-amber-200 bg-amber-50 text-amber-700"><Zap size={11}/>{t('electricity')}</span>}
+              {listing.patta_available && <span className="badge border-blue-200 bg-blue-50 text-blue-700"><FileText size={11}/>{t('patta')}</span>}
               {listing.water_source && <span className="badge border-cyan-200 bg-cyan-50 text-cyan-700"><Droplets size={11}/>{listing.water_source}</span>}
-              {listing.price_negotiable && <span className="badge border-earth-200 bg-earth-50 text-earth-700">💬 Price Negotiable</span>}
+              {listing.price_negotiable && <span className="badge border-earth-200 bg-earth-50 text-earth-700">💬 {t('price_negotiable_desc')}</span>}
             </div>
 
             {listing.description && (
               <div className="mt-4">
-                <h3 className="font-semibold text-gray-700 mb-2">Description</h3>
+                <h3 className="font-semibold text-gray-700 mb-2">{t('description')}</h3>
                 <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap font-body">{listing.description}</p>
               </div>
             )}
 
-            <p className="text-xs text-gray-400 mt-4 flex items-center gap-1">
+            <p className="text-xs text-gray-400 mt-4 flex items-center gap-1 font-body">
               <Calendar size={11}/>
-              Listed on {format(new Date(listing.created_at), 'dd MMM yyyy')}
+              {t('listed_on')} {format(new Date(listing.created_at), 'dd MMM yyyy')}
             </p>
           </div>
 
@@ -164,7 +164,7 @@ export default function ListingDetail() {
           {listing.latitude && listing.longitude && (
             <div className="card p-4">
               <h3 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                <MapPin size={16} className="text-forest-600"/>Location on Map
+                <MapPin size={16} className="text-forest-600"/>{t('location_on_map')}
               </h3>
               <MapPicker lat={listing.latitude} lng={listing.longitude} readOnly/>
             </div>
@@ -176,7 +176,7 @@ export default function ListingDetail() {
           {/* Price card */}
           <div className="card p-5 border-2 border-forest-100">
             <p className="font-display text-3xl font-bold text-forest-700 mb-1">{formatPrice(listing.price)}</p>
-            {listing.price_negotiable && <p className="text-sm text-earth-600">Price is negotiable</p>}
+            {listing.price_negotiable && <p className="text-sm text-earth-600 font-body">{t('price_negotiable_desc')}</p>}
           </div>
 
           {/* Contact details card */}
@@ -190,7 +190,7 @@ export default function ListingDetail() {
               </div>
               <div>
                 <p className="font-medium text-gray-800">{listing.contact_name || listing.profiles?.full_name || 'Varagan Partner'}</p>
-                <p className="text-sm text-gray-500">Verified Partner</p>
+                <p className="text-sm text-gray-500 font-body">{t('verified_partner')}</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
@@ -206,12 +206,12 @@ export default function ListingDetail() {
           </div>
 
           {/* Inquiry form */}
-          <div className="card p-5">
-            <h3 className="font-semibold text-gray-700 mb-4">{t('send_inquiry')}</h3>
+          <div className="card p-5 font-body">
+            <h3 className="font-semibold text-gray-700 mb-4 font-display">{t('send_inquiry')}</h3>
             <form onSubmit={handleInquiry} className="space-y-3">
               <div>
                 <label className="label">{t('your_name')} *</label>
-                <input required className="input" placeholder="Name"
+                <input required className="input" placeholder={t('your_name')}
                   value={inquiry.buyer_name} onChange={e=>setInquiry(i=>({...i,buyer_name:e.target.value}))}/>
               </div>
               <div>
@@ -221,15 +221,15 @@ export default function ListingDetail() {
               </div>
               <div>
                 <label className="label">{t('email')}</label>
-                <input type="email" className="input" placeholder="Optional"
+                <input type="email" className="input" placeholder={t('optional_placeholder')}
                   value={inquiry.buyer_email} onChange={e=>setInquiry(i=>({...i,buyer_email:e.target.value}))}/>
               </div>
               <div>
                 <label className="label">{t('message')}</label>
-                <textarea className="input resize-none" rows={3} placeholder="I'm interested in this land..."
+                <textarea className="input resize-none" rows={3} placeholder={t('inquiry_msg_placeholder')}
                   value={inquiry.message} onChange={e=>setInquiry(i=>({...i,message:e.target.value}))}/>
               </div>
-              <button type="submit" disabled={submitting} className="btn-primary w-full">
+              <button type="submit" disabled={submitting} className="btn-primary w-full font-display">
                 {submitting ? t('sending') : t('send_inquiry')}
               </button>
             </form>

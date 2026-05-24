@@ -123,20 +123,20 @@ export default function PublicLayout() {
               <p className="text-sm text-forest-300">{t('hero_subtitle')}</p>
             </div>
             <div>
-              <h4 className="font-medium text-white mb-3">Quick Links</h4>
-              <div className="flex flex-col gap-2 text-sm text-forest-300">
+              <h4 className="font-medium text-white mb-3 font-display">{t('quick_links')}</h4>
+              <div className="flex flex-col gap-2 text-sm text-forest-300 font-body">
                 <Link to="/listings" className="hover:text-white transition">{t('browse')}</Link>
                 <Link to="/register" className="hover:text-white transition">{t('register')}</Link>
                 <Link to="/login"    className="hover:text-white transition">{t('signIn')}</Link>
               </div>
             </div>
             <div>
-              <h4 className="font-medium text-white mb-3">Contact</h4>
-              <p className="text-sm text-forest-300">varaganrealestate@gmail.com<br/>Tamil Nadu, India</p>
+              <h4 className="font-medium text-white mb-3 font-display">{t('contact')}</h4>
+              <p className="text-sm text-forest-300 font-body">varaganrealestate@gmail.com<br/>Tamil Nadu, India</p>
             </div>
           </div>
-          <div className="border-t border-forest-700 mt-8 pt-6 text-center text-xs text-forest-400">
-            © {new Date().getFullYear()} Varagan Real Estate. All rights reserved.
+          <div className="border-t border-forest-700 mt-8 pt-6 text-center text-xs text-forest-400 font-body">
+            © {new Date().getFullYear()} Varagan Real Estate. {t('all_rights_reserved')}.
           </div>
         </div>
       </footer>
