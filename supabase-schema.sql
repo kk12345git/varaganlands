@@ -86,6 +86,16 @@ create table public.listings (
   reviewed_at     timestamptz,
   admin_notes     text,
 
+  -- Original fields for seller view
+  original_title           text,
+  original_description     text,
+  original_price           numeric,
+  original_price_per_unit  numeric,
+
+  -- Display contact details edited by admin
+  contact_name             text,
+  contact_phone            text,
+
   created_at      timestamptz default now(),
   updated_at      timestamptz default now()
 );

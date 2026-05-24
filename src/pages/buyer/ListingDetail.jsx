@@ -3,7 +3,8 @@ import { useParams, Link } from 'react-router-dom'
 import { MapPin, Maximize2, Phone, MessageCircle, ChevronLeft, CheckCircle, Zap, Droplets, FileText, Calendar } from 'lucide-react'
 import { useListingsStore } from '../../store/listingsStore'
 import { supabase } from '../../lib/supabase'
-import { notifyAdminNewInquiry } from '../../lib/notifications'
+import { notifyAdminNewInquiry, ADMIN_WHATSAPP, emailAdminNewInquiry } from '../../lib/notifications'
+import { useTranslation } from '../../hooks/useTranslation'
 import { formatPrice, formatArea, LAND_TYPES, STATUS_LABELS } from '../../lib/constants'
 import MapPicker from '../../components/ui/MapPicker'
 import toast from 'react-hot-toast'
@@ -11,6 +12,7 @@ import { format } from 'date-fns'
 
 export default function ListingDetail() {
   const { id } = useParams()
+  const { t } = useTranslation()
   const { fetchById, currentListing: listing, loading } = useListingsStore()
   const [activeImg, setActiveImg] = useState(0)
   const [inquiry, setInquiry] = useState({ buyer_name:'', buyer_phone:'', buyer_email:'', message:'' })
@@ -24,8 +26,9 @@ export default function ListingDetail() {
     try {
       const { error } = await supabase.from('inquiries').insert({ listing_id: id, ...inquiry })
       if (error) throw error
-      toast.success('Inquiry sent! Seller will contact you soon.')
+      toast.success(t('inquiry_success') || 'Inquiry sent! We will contact you soon.')
       notifyAdminNewInquiry(listing, inquiry)
+      await emailAdminNewInquiry(listing, inquiry)
       setInquiry({ buyer_name:'', buyer_phone:'', buyer_email:'', message:'' })
     } catch (err) {
       toast.error(err.message)
@@ -34,10 +37,13 @@ export default function ListingDetail() {
     }
   }
 
-  const callSeller = () => { window.open(`tel:${listing.profiles?.phone}`) }
+  const callSeller = () => {
+    const phone = listing.contact_phone || ADMIN_WHATSAPP || '918939789343'
+    window.open(`tel:${phone}`)
+  }
   const whatsappSeller = () => {
-    const phone = listing.profiles?.whatsapp || listing.profiles?.phone
-    const msg = encodeURIComponent(`Hi, I'm interested in your land listing: "${listing.title}" on Varagan.`)
+    const phone = listing.contact_phone || ADMIN_WHATSAPP || '918939789343'
+    const msg = encodeURIComponent(`Hi, I'm interested in your land listing: "${listing.title}" (ID: ${listing.id}) on Varagan.`)
     window.open(`https://wa.me/${phone?.replace(/\D/g,'')}?text=${msg}`, '_blank')
   }
 
@@ -173,58 +179,58 @@ export default function ListingDetail() {
             {listing.price_negotiable && <p className="text-sm text-earth-600">Price is negotiable</p>}
           </div>
 
-          {/* Seller card */}
+          {/* Contact details card */}
           <div className="card p-5">
-            <h3 className="font-semibold text-gray-700 mb-3">Seller Details</h3>
+            <h3 className="font-semibold text-gray-700 mb-3">{t('contact_details')}</h3>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-11 h-11 bg-forest-100 rounded-full flex items-center justify-center">
                 <span className="font-display font-bold text-forest-600">
-                  {listing.profiles?.full_name?.[0]?.toUpperCase() || 'S'}
+                  {(listing.contact_name || listing.profiles?.full_name)?.[0]?.toUpperCase() || 'V'}
                 </span>
               </div>
               <div>
-                <p className="font-medium text-gray-800">{listing.profiles?.full_name}</p>
-                <p className="text-sm text-gray-500">Verified Seller</p>
+                <p className="font-medium text-gray-800">{listing.contact_name || listing.profiles?.full_name || 'Varagan Partner'}</p>
+                <p className="text-sm text-gray-500">Verified Partner</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <button onClick={callSeller}
                 className="flex items-center justify-center gap-2 py-2.5 bg-forest-600 text-white rounded-xl text-sm font-medium hover:bg-forest-700 transition">
-                <Phone size={15}/>Call
+                <Phone size={15}/>{t('call')}
               </button>
               <button onClick={whatsappSeller}
                 className="flex items-center justify-center gap-2 py-2.5 bg-green-500 text-white rounded-xl text-sm font-medium hover:bg-green-600 transition">
-                <MessageCircle size={15}/>WhatsApp
+                <MessageCircle size={15}/>{t('whatsapp')}
               </button>
             </div>
           </div>
 
           {/* Inquiry form */}
           <div className="card p-5">
-            <h3 className="font-semibold text-gray-700 mb-4">Send Inquiry</h3>
+            <h3 className="font-semibold text-gray-700 mb-4">{t('send_inquiry')}</h3>
             <form onSubmit={handleInquiry} className="space-y-3">
               <div>
-                <label className="label">Your Name *</label>
-                <input required className="input" placeholder="Full name"
+                <label className="label">{t('your_name')} *</label>
+                <input required className="input" placeholder="Name"
                   value={inquiry.buyer_name} onChange={e=>setInquiry(i=>({...i,buyer_name:e.target.value}))}/>
               </div>
               <div>
-                <label className="label">Phone Number *</label>
+                <label className="label">{t('phone_number')} *</label>
                 <input required type="tel" className="input" placeholder="+91 98765 43210"
                   value={inquiry.buyer_phone} onChange={e=>setInquiry(i=>({...i,buyer_phone:e.target.value}))}/>
               </div>
               <div>
-                <label className="label">Email</label>
+                <label className="label">{t('email')}</label>
                 <input type="email" className="input" placeholder="Optional"
                   value={inquiry.buyer_email} onChange={e=>setInquiry(i=>({...i,buyer_email:e.target.value}))}/>
               </div>
               <div>
-                <label className="label">Message</label>
+                <label className="label">{t('message')}</label>
                 <textarea className="input resize-none" rows={3} placeholder="I'm interested in this land..."
                   value={inquiry.message} onChange={e=>setInquiry(i=>({...i,message:e.target.value}))}/>
               </div>
               <button type="submit" disabled={submitting} className="btn-primary w-full">
-                {submitting ? 'Sending...' : 'Send Inquiry'}
+                {submitting ? t('sending') : t('send_inquiry')}
               </button>
             </form>
           </div>

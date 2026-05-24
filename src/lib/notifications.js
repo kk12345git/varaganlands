@@ -1,7 +1,7 @@
 // ── Notification helpers: WhatsApp deep-link + EmailJS ──────────────────────
 
-const ADMIN_WHATSAPP = import.meta.env.VITE_ADMIN_WHATSAPP
-const ADMIN_EMAIL    = import.meta.env.VITE_ADMIN_EMAIL
+export const ADMIN_WHATSAPP = import.meta.env.VITE_ADMIN_WHATSAPP
+export const ADMIN_EMAIL    = import.meta.env.VITE_ADMIN_EMAIL
 const APP_URL        = import.meta.env.VITE_APP_URL || 'https://Varagan.in'
 
 // ─── WhatsApp (opens wa.me link — works on mobile & desktop) ─────────────────
@@ -104,6 +104,14 @@ export async function emailAdminNewListing(listing, sellerName) {
     to: ADMIN_EMAIL,
     subject: `[Varagan] New listing pending review: ${listing.title}`,
     body: `New listing submitted:\n\nTitle: ${listing.title}\nDistrict: ${listing.district}\nArea: ${listing.area_value} ${listing.area_unit}\nPrice: ₹${Number(listing.price).toLocaleString('en-IN')}\nSeller: ${sellerName}\n\nReview at: ${APP_URL}/admin/listings`,
+  })
+}
+
+export async function emailAdminNewInquiry(listing, inquiry) {
+  await sendEmailNotification({
+    to: ADMIN_EMAIL,
+    subject: `[Varagan] New Inquiry for: ${listing.title}`,
+    body: `New Inquiry details:\n\nListing Title: ${listing.title}\nDistrict: ${listing.district}\n\nBuyer Details:\nName: ${inquiry.buyer_name}\nPhone: ${inquiry.buyer_phone}\nEmail: ${inquiry.buyer_email || 'N/A'}\nMessage: ${inquiry.message || 'No message'}\n\nAdmin Panel: ${APP_URL}/admin/inquiries`,
   })
 }
 

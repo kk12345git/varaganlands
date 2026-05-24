@@ -18,8 +18,18 @@ export default function EditListing() {
 
   useEffect(() => {
     fetchById(id).then(l => {
-      if (l && l.seller_id === user?.id) setForm(l)
-      else { toast.error('Access denied'); navigate('/seller/listings') }
+      if (l && l.seller_id === user?.id) {
+        setForm({
+          ...l,
+          title: l.original_title || l.title,
+          description: l.original_description || l.description,
+          price: l.original_price || l.price,
+          price_per_unit: l.original_price_per_unit || l.price_per_unit,
+        })
+      } else {
+        toast.error('Access denied')
+        navigate('/seller/listings')
+      }
     })
   }, [id, user])
 
@@ -34,7 +44,14 @@ export default function EditListing() {
 
   const handleSave = async () => {
     try {
-      const updates = { ...form, status: 'pending' } // re-submit for review on edit
+      const updates = {
+        ...form,
+        status: 'pending', // re-submit for review on edit
+        original_title: form.title,
+        original_description: form.description,
+        original_price: Number(form.price),
+        original_price_per_unit: form.price_per_unit ? Number(form.price_per_unit) : null,
+      }
       await updateListing(id, updates)
       toast.success('Listing updated and resubmitted for review!')
       navigate('/seller/listings')

@@ -62,10 +62,36 @@ export const useListingsStore = create((set, get) => ({
 
   createListing: async (formData, imageFiles, sellerId) => {
     set({ loading: true })
+    
+    // Fetch seller profile to set default display contact details
+    let profile = null
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('full_name, phone')
+        .eq('id', sellerId)
+        .single()
+      profile = data
+    } catch (err) {
+      console.warn('Failed to fetch seller profile for listing creation:', err.message)
+    }
+
+    const listingData = {
+      ...formData,
+      seller_id: sellerId,
+      status: 'pending',
+      original_title: formData.title,
+      original_description: formData.description,
+      original_price: Number(formData.price),
+      original_price_per_unit: formData.price_per_unit ? Number(formData.price_per_unit) : null,
+      contact_name: profile?.full_name || '',
+      contact_phone: profile?.phone || '',
+    }
+
     // Insert listing first to get ID
     const { data: listing, error } = await supabase
       .from('listings')
-      .insert({ ...formData, seller_id: sellerId, status: 'pending' })
+      .insert(listingData)
       .select()
       .single()
     if (error) { set({ loading: false }); throw error }

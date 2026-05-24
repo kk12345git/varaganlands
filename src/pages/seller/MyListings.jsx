@@ -68,13 +68,13 @@ export default function MyListings() {
                 {/* Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2 flex-wrap">
-                    <h3 className="font-display font-semibold text-gray-900 truncate">{l.title}</h3>
+                    <h3 className="font-display font-semibold text-gray-900 truncate">{l.original_title || l.title}</h3>
                     <span className={`badge ${STATUS_COLORS[l.status]} flex-shrink-0`}>
                       {STATUS_LABELS[l.status]}
                     </span>
                   </div>
                   <p className="text-sm text-gray-500 mt-0.5">
-                    {l.district} · {formatArea(l.area_value, l.area_unit)} · {formatPrice(l.price)}
+                    {l.district} · {formatArea(l.area_value, l.area_unit)} · {formatPrice(l.original_price || l.price)}
                   </p>
                   <p className="text-xs text-gray-400 mt-1">
                     Added {format(new Date(l.created_at), 'dd MMM yyyy')}

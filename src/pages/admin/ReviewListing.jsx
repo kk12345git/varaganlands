@@ -18,8 +18,34 @@ export default function AdminReviewListing() {
   const [showRejectForm, setShowRejectForm] = useState(false)
   const [activeImg, setActiveImg] = useState(0)
   const [processing, setProcessing] = useState(false)
+  
+  // Admin Editing states
+  const [isEditing, setIsEditing] = useState(false)
+  const [editForm, setEditForm] = useState({
+    title: '',
+    description: '',
+    price: '',
+    price_per_unit: '',
+    contact_name: '',
+    contact_phone: '',
+    survey_number: ''
+  })
 
   useEffect(() => { fetchById(id) }, [id])
+
+  useEffect(() => {
+    if (listing) {
+      setEditForm({
+        title: listing.title || '',
+        description: listing.description || '',
+        price: listing.price || '',
+        price_per_unit: listing.price_per_unit || '',
+        contact_name: listing.contact_name || listing.profiles?.full_name || '',
+        contact_phone: listing.contact_phone || listing.profiles?.phone || '',
+        survey_number: listing.survey_number || ''
+      })
+    }
+  }, [listing])
 
   const handleApprove = async () => {
     setProcessing(true)
@@ -60,6 +86,28 @@ export default function AdminReviewListing() {
     toast.success(listing.featured ? 'Removed from featured' : 'Marked as featured!')
   }
 
+  const handleSaveEdits = async () => {
+    setProcessing(true)
+    try {
+      await updateListing(id, {
+        title: editForm.title,
+        description: editForm.description,
+        price: Number(editForm.price),
+        price_per_unit: editForm.price_per_unit ? Number(editForm.price_per_unit) : null,
+        contact_name: editForm.contact_name,
+        contact_phone: editForm.contact_phone,
+        survey_number: editForm.survey_number
+      })
+      toast.success('Listing details updated successfully!')
+      setIsEditing(false)
+      await fetchById(id)
+    } catch (err) {
+      toast.error(err.message)
+    } finally {
+      setProcessing(false)
+    }
+  }
+
   if (!listing) return (
     <div className="flex justify-center py-20">
       <div className="w-8 h-8 border-4 border-forest-600 border-t-transparent rounded-full animate-spin"/>
@@ -84,6 +132,13 @@ export default function AdminReviewListing() {
 
         {/* Action buttons */}
         <div className="flex items-center gap-2 flex-wrap">
+          <button onClick={() => setIsEditing(!isEditing)}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium border transition
+                        ${isEditing ? 'border-forest-300 bg-forest-50 text-forest-700' : 'border-gray-200 text-gray-600 hover:border-forest-300'}`}>
+            <Edit2 size={14}/>
+            {isEditing ? 'Cancel Edit' : 'Edit Details'}
+          </button>
+
           <button onClick={toggleFeatured}
             className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium border transition
                         ${listing.featured ? 'border-earth-300 bg-earth-50 text-earth-700' : 'border-gray-200 text-gray-600 hover:border-earth-300'}`}>
@@ -149,43 +204,107 @@ export default function AdminReviewListing() {
           </div>
 
           {/* Info card */}
-          <div className="card p-5 space-y-4">
-            <div>
-              <h2 className="font-display text-xl font-bold text-gray-900">{listing.title}</h2>
-              <div className="flex items-center gap-1.5 text-gray-500 text-sm mt-1">
-                <MapPin size={13} className="text-forest-500"/>
-                {[listing.village, listing.taluk, listing.district].filter(Boolean).join(', ')}
+          {isEditing ? (
+            <div className="card p-5 space-y-4 border-2 border-forest-500 bg-forest-50/10">
+              <h2 className="font-display text-lg font-bold text-gray-900 mb-2">Edit Listing Details (Buyer View)</h2>
+              
+              {/* Compare with Original Section */}
+              <div className="bg-amber-50 border border-amber-100 rounded-xl p-3 text-xs text-amber-800 space-y-1 mb-2">
+                <p className="font-bold">⚠️ Seller's Original Upload Info:</p>
+                <p>• <b>Title:</b> {listing.original_title || listing.title}</p>
+                <p>• <b>Price:</b> {formatPrice(listing.original_price || listing.price)}</p>
+                <p>• <b>Description:</b> {listing.original_description || listing.description || 'N/A'}</p>
               </div>
-              {listing.survey_number && (
-                <p className="text-sm text-gray-500 mt-1">Survey No: <span className="font-mono font-medium">{listing.survey_number}</span></p>
-              )}
-            </div>
 
-            <div className="grid grid-cols-3 gap-3 bg-smoke rounded-xl p-3">
-              <div><p className="text-xs text-gray-400">Type</p><p className="font-medium text-sm">{landType?.icon} {landType?.label?.split('/')[0].trim()}</p></div>
-              <div><p className="text-xs text-gray-400">Area</p><p className="font-medium text-sm">{formatArea(listing.area_value, listing.area_unit)}</p></div>
-              <div><p className="text-xs text-gray-400">Price</p><p className="font-medium text-sm text-forest-700">{formatPrice(listing.price)}</p></div>
-            </div>
+              <div className="space-y-3">
+                <div>
+                  <label className="label text-xs font-semibold text-gray-600">Buyer Facing Title</label>
+                  <input required className="input bg-white text-sm" value={editForm.title} onChange={e=>setEditForm(f=>({...f,title:e.target.value}))}/>
+                </div>
 
-            <div className="flex flex-wrap gap-2">
-              {listing.road_access     && <span className="badge border-forest-200 bg-forest-50 text-forest-700">🛣️ Road Access</span>}
-              {listing.electricity     && <span className="badge border-amber-200 bg-amber-50 text-amber-700">⚡ Electricity</span>}
-              {listing.patta_available && <span className="badge border-blue-200 bg-blue-50 text-blue-700">📄 Patta</span>}
-              {listing.water_source    && <span className="badge border-cyan-200 bg-cyan-50 text-cyan-700">💧 {listing.water_source}</span>}
-              {listing.price_negotiable&& <span className="badge border-earth-200 bg-earth-50 text-earth-700">💬 Negotiable</span>}
-            </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="label text-xs font-semibold text-gray-600">Buyer Facing Price (₹)</label>
+                    <input required type="number" className="input bg-white text-sm" value={editForm.price} onChange={e=>setEditForm(f=>({...f,price:e.target.value}))}/>
+                  </div>
+                  <div>
+                    <label className="label text-xs font-semibold text-gray-600">Price per unit (₹)</label>
+                    <input type="number" className="input bg-white text-sm" value={editForm.price_per_unit} onChange={e=>setEditForm(f=>({...f,price_per_unit:e.target.value}))}/>
+                  </div>
+                </div>
 
-            {listing.description && (
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="label text-xs font-semibold text-gray-600">Display Contact Name</label>
+                    <input className="input bg-white text-sm" value={editForm.contact_name} onChange={e=>setEditForm(f=>({...f,contact_name:e.target.value}))}/>
+                  </div>
+                  <div>
+                    <label className="label text-xs font-semibold text-gray-600">Display Contact Phone</label>
+                    <input className="input bg-white text-sm" value={editForm.contact_phone} onChange={e=>setEditForm(f=>({...f,contact_phone:e.target.value}))}/>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="label text-xs font-semibold text-gray-600">Survey Number</label>
+                  <input className="input bg-white text-sm font-mono" value={editForm.survey_number} onChange={e=>setEditForm(f=>({...f,survey_number:e.target.value}))}/>
+                </div>
+
+                <div>
+                  <label className="label text-xs font-semibold text-gray-600">Buyer Facing Description</label>
+                  <textarea className="input bg-white text-sm resize-none" rows={4} value={editForm.description} onChange={e=>setEditForm(f=>({...f,description:e.target.value}))}/>
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <button onClick={handleSaveEdits} disabled={processing}
+                    className="btn-primary flex items-center justify-center gap-1.5 text-sm py-2 px-4">
+                    {processing ? 'Saving...' : 'Save Changes'}
+                  </button>
+                  <button onClick={() => setIsEditing(false)}
+                    className="btn-secondary py-2 px-4 text-sm">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="card p-5 space-y-4">
               <div>
-                <p className="text-xs text-gray-400 mb-1">Description</p>
-                <p className="text-sm text-gray-700 whitespace-pre-wrap">{listing.description}</p>
+                <h2 className="font-display text-xl font-bold text-gray-900">{listing.title}</h2>
+                <div className="flex items-center gap-1.5 text-gray-500 text-sm mt-1">
+                  <MapPin size={13} className="text-forest-500"/>
+                  {[listing.village, listing.taluk, listing.district].filter(Boolean).join(', ')}
+                </div>
+                {listing.survey_number && (
+                  <p className="text-sm text-gray-500 mt-1">Survey No: <span className="font-mono font-medium">{listing.survey_number}</span></p>
+                )}
               </div>
-            )}
 
-            <p className="text-xs text-gray-400">
-              Submitted: {format(new Date(listing.created_at), 'dd MMM yyyy, h:mm a')}
-            </p>
-          </div>
+              <div className="grid grid-cols-3 gap-3 bg-smoke rounded-xl p-3">
+                <div><p className="text-xs text-gray-400">Type</p><p className="font-medium text-sm">{landType?.icon} {landType?.label?.split('/')[0].trim()}</p></div>
+                <div><p className="text-xs text-gray-400">Area</p><p className="font-medium text-sm">{formatArea(listing.area_value, listing.area_unit)}</p></div>
+                <div><p className="text-xs text-gray-400">Price</p><p className="font-medium text-sm text-forest-700">{formatPrice(listing.price)}</p></div>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {listing.road_access     && <span className="badge border-forest-200 bg-forest-50 text-forest-700">🛣️ Road Access</span>}
+                {listing.electricity     && <span className="badge border-amber-200 bg-amber-50 text-amber-700">⚡ Electricity</span>}
+                {listing.patta_available && <span className="badge border-blue-200 bg-blue-50 text-blue-700">📄 Patta</span>}
+                {listing.water_source    && <span className="badge border-cyan-200 bg-cyan-50 text-cyan-700">💧 {listing.water_source}</span>}
+                {listing.price_negotiable&& <span className="badge border-earth-200 bg-earth-50 text-earth-700">💬 Negotiable</span>}
+              </div>
+
+              {listing.description && (
+                <div>
+                  <p className="text-xs text-gray-400 mb-1">Description</p>
+                  <p className="text-sm text-gray-700 whitespace-pre-wrap">{listing.description}</p>
+                </div>
+              )}
+
+              <p className="text-xs text-gray-400">
+                Submitted: {format(new Date(listing.created_at), 'dd MMM yyyy, h:mm a')}
+              </p>
+            </div>
+          )}
 
           {/* Map */}
           {listing.latitude && listing.longitude && (
