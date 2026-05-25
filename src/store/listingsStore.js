@@ -22,7 +22,7 @@ export const useListingsStore = create((set, get) => ({
     set({ loading: true, error: null })
     let q = supabase
       .from('listings')
-      .select('*, profiles(full_name, phone, whatsapp)')
+      .select('*, profiles:profiles!listings_seller_id_fkey(full_name, phone, whatsapp)')
       .eq('status', 'approved')
       .order('created_at', { ascending: false })
 
@@ -40,7 +40,7 @@ export const useListingsStore = create((set, get) => ({
     set({ loading: true })
     const { data, error } = await supabase
       .from('listings')
-      .select('*, profiles(full_name, phone, whatsapp, avatar_url)')
+      .select('*, profiles:profiles!listings_seller_id_fkey(full_name, phone, whatsapp, avatar_url)')
       .eq('id', id)
       .single()
     if (error) { set({ error: error.message, loading: false }); return }
@@ -140,10 +140,10 @@ export const useListingsStore = create((set, get) => ({
     set({ loading: true })
     const { data, error } = await supabase
       .from('listings')
-      .select('*, profiles(full_name, phone)')
+      .select('*, profiles:profiles!listings_seller_id_fkey(full_name, phone)')
       .eq('status', 'pending')
       .order('created_at', { ascending: true })
-    if (error) { set({ loading: false }); return }
+    if (error) { set({ error: error.message, loading: false }); return }
     set({ pendingListings: data || [], loading: false })
   },
 
@@ -151,9 +151,9 @@ export const useListingsStore = create((set, get) => ({
     set({ loading: true })
     const { data, error } = await supabase
       .from('listings')
-      .select('*, profiles(full_name, phone)')
+      .select('*, profiles:profiles!listings_seller_id_fkey(full_name, phone)')
       .order('created_at', { ascending: false })
-    if (error) { set({ loading: false }); return }
+    if (error) { set({ error: error.message, loading: false }); return }
     set({ listings: data || [], loading: false })
   },
 
