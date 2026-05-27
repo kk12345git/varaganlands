@@ -91,6 +91,8 @@ export const translations = {
     commercial: "வணிக நிலம்",
     industrial: "தொழில் நிலம்",
     plantation: "தோட்ட நிலம்",
+    plot: "மனை (Plot)",
+    flat: "அடுக்குமாடி (Flat)",
     hero_badge: "தமிழ்நாட்டின் நம்பகமான நிலச் சந்தை",
     verified_listings_avail: "சரிபார்க்கப்பட்ட நிலங்கள் உள்ளன",
     active_listings: "செயலில் உள்ள நிலங்கள்",
@@ -115,6 +117,8 @@ export const translations = {
     land_type_label: "நில வகை",
     district_label: "மாவட்டம்",
     land_listings: "நில விவரங்கள்",
+    interactive_view: "3D-la parunga",
+    drag_to_rotate: "Thiruppi pakka drag pannunga, zoom panna scroll/buttons use pannunga",
   },
 
   te: {
@@ -207,6 +211,8 @@ export const translations = {
     commercial: "వాణిజ్య భూమి",
     industrial: "పారిశ്രാమిక భూమి",
     plantation: "తోట భూమి",
+    plot: "ప్లాట్ (Plot)",
+    flat: "ఫ్లాట్ (Flat)",
     hero_badge: "తమిళనాడు యొక్క విశ్వసనీయ ల్యాండ్ మార్కెట్‌ప్లేస్",
     verified_listings_avail: "ధృవీకరించబడిన భూములు అందుబాటులో ఉన్నాయి",
     active_listings: "క్రియాశీల లిస్టింగ్‌లు",
@@ -231,6 +237,8 @@ export const translations = {
     land_type_label: "భూమి రకం",
     district_label: "జిల్లా",
     land_listings: "భూమి లిస్టింగ్‌లు",
+    interactive_view: "3D లో చూడండి",
+    drag_to_rotate: "తిప్పడానికి డ్రాగ్ చేయండి, జూమ్ చేయడానికి స్క్రోల్ చేయండి",
   },
 
   en: {
@@ -323,6 +331,8 @@ export const translations = {
     commercial: "Commercial",
     industrial: "Industrial",
     plantation: "Plantation",
+    plot: "Plot",
+    flat: "Flat / Apartment",
     hero_badge: "Tamil Nadu's Trusted Land Marketplace",
     verified_listings_avail: "verified listings available",
     active_listings: "Active Listings",
@@ -347,6 +357,8 @@ export const translations = {
     land_type_label: "Land Type",
     district_label: "District",
     land_listings: "Land Listings",
+    interactive_view: "Explore in 3D",
+    drag_to_rotate: "Drag to rotate, zoom with wheel/buttons",
   },
 
   hi: {
@@ -439,6 +451,8 @@ export const translations = {
     commercial: "व्यावसायिक भूमि",
     industrial: "औद्योगिक भूमि",
     plantation: "बागान भूमि",
+    plot: "प्लॉट (Plot)",
+    flat: "फ्लैट (Flat)",
     hero_badge: "तमिलनाडु का विश्वसनीय भूमि बाज़ार",
     verified_listings_avail: "सत्यापित जमीनें उपलब्ध हैं",
     active_listings: "सक्रिय जमीनें",
@@ -463,6 +477,8 @@ export const translations = {
     land_type_label: "जमीन का प्रकार",
     district_label: "जिला",
     land_listings: "जमीन की सूची",
+    interactive_view: "3D में देखें",
+    drag_to_rotate: "घुमाने के लिए ड्रैग करें, ज़ूम करने के लिए स्क्रॉल करें",
   },
 
   ml: {
@@ -555,6 +571,8 @@ export const translations = {
     commercial: "വാണിജ്യ ഭൂമി",
     industrial: "വ്യവസായ ഭൂമി",
     plantation: "തോട്ടം ഭൂമി",
+    plot: "പ്ലോട്ട് (Plot)",
+    flat: "ഫ്ലാറ്റ് (Flat)",
     hero_badge: "തമിഴ്‌നാട്ടിലെ വിശ്വസനീയമായ ഭൂമി വിപണി",
     verified_listings_avail: "സ്ഥിരീകരിച്ച ഭൂമികൾ ലഭ്യമാണ്",
     active_listings: "സജീവ ലിസ്റ്റിംഗുകൾ",
@@ -579,5 +597,7 @@ export const translations = {
     land_type_label: "ഭൂമിയുടെ തരം",
     district_label: "ജില്ല",
     land_listings: "ഭൂമി ലിസ്റ്റിംഗുകൾ",
+    interactive_view: "3D-യിൽ കാണുക",
+    drag_to_rotate: "തിരിക്കാൻ ഡ്രാഗ് ചെയ്യുക, സൂം ചെയ്യാൻ സ്ക്രോൾ ചെയ്യുക",
   }
 }

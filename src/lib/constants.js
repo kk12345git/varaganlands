@@ -15,6 +15,8 @@ export const LAND_TYPES = [
   { value: 'commercial',   label: 'Commercial / வணிக நிலம்',      icon: '🏪' },
   { value: 'industrial',   label: 'Industrial / தொழில் நிலம்',    icon: '🏭' },
   { value: 'plantation',   label: 'Plantation / தோட்ட நிலம்',    icon: '🌴' },
+  { value: 'plot',         label: 'Plot / மனை',                  icon: '📐' },
+  { value: 'flat',         label: 'Flat / அடுக்குமாடி',           icon: '🏢' },
 ]
 
 export const AREA_UNITS = [

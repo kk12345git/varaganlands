@@ -7,6 +7,7 @@ import { notifyAdminNewInquiry, ADMIN_WHATSAPP, emailAdminNewInquiry } from '../
 import { useTranslation } from '../../hooks/useTranslation'
 import { formatPrice, formatArea, LAND_TYPES, STATUS_LABELS } from '../../lib/constants'
 import MapPicker from '../../components/ui/MapPicker'
+import Land3DViewer from '../../components/buyer/Land3DViewer'
 import toast from 'react-hot-toast'
 import { format } from 'date-fns'
 
@@ -159,6 +160,9 @@ export default function ListingDetail() {
               {t('listed_on')} {format(new Date(listing.created_at), 'dd MMM yyyy')}
             </p>
           </div>
+
+          {/* 3D Land Plot Visualizer */}
+          <Land3DViewer listing={listing} />
 
           {/* Map */}
           {listing.latitude && listing.longitude && (

@@ -95,7 +95,7 @@ export default function HomePage() {
       <section className="page-container py-14">
         <h2 className="section-heading text-center mb-2">{t('browse_by_type')}</h2>
         <p className="text-gray-500 text-center mb-8 font-body">{t('find_perfect_land')}</p>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
           {LAND_TYPES.map(tOption => (
             <Link key={tOption.value}
               to={`/listings?land_type=${tOption.value}`}

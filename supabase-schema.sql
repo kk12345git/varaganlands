@@ -46,7 +46,7 @@ create table public.listings (
   -- Basic info
   title           text not null,
   description     text,
-  land_type       text not null check (land_type in ('agricultural','residential','commercial','industrial','plantation')),
+  land_type       text not null check (land_type in ('agricultural','residential','commercial','industrial','plantation','plot','flat')),
 
   -- Location
   district        text not null,
@@ -163,6 +163,9 @@ create policy "Sellers insert own" on public.listings for insert
 create policy "Sellers update own" on public.listings for update
   using (auth.uid() = seller_id)
   with check (auth.uid() = seller_id and status in ('pending', 'sold'));
+
+create policy "Sellers delete own" on public.listings for delete
+  using (auth.uid() = seller_id);
 
 create policy "Admins full access" on public.listings for all
   using (exists (select 1 from profiles where id = auth.uid() and role = 'admin'));

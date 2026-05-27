@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { supabase, uploadListingImage } from '../lib/supabase'
+import { supabase, uploadListingImage, uploadListingDocument } from '../lib/supabase'
 
 export const useListingsStore = create((set, get) => ({
   listings:        [],
@@ -60,7 +60,7 @@ export const useListingsStore = create((set, get) => ({
     set({ myListings: data || [], loading: false })
   },
 
-  createListing: async (formData, imageFiles, sellerId) => {
+  createListing: async (formData, imageFiles, documentFiles, sellerId) => {
     set({ loading: true })
     
     // Fetch seller profile to set default display contact details
@@ -106,10 +106,22 @@ export const useListingsStore = create((set, get) => ({
       imageUrls.push(url)
     }
 
-    // Update with image URLs
-    if (imageUrls.length > 0) {
-      await supabase.from('listings').update({ images: imageUrls }).eq('id', listing.id)
-      listing.images = imageUrls
+    // Upload documents
+    const docUrls = []
+    for (const file of documentFiles) {
+      const url = await uploadListingDocument(file, listing.id)
+      docUrls.push(url)
+    }
+
+    // Update with image and document URLs
+    const updates = {}
+    if (imageUrls.length > 0) updates.images = imageUrls
+    if (docUrls.length > 0) updates.documents = docUrls
+
+    if (Object.keys(updates).length > 0) {
+      await supabase.from('listings').update(updates).eq('id', listing.id)
+      if (imageUrls.length > 0) listing.images = imageUrls
+      if (docUrls.length > 0) listing.documents = docUrls
     }
 
     set((s) => ({ myListings: [listing, ...s.myListings], loading: false }))

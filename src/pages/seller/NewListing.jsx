@@ -12,9 +12,10 @@ import { ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react'
 const STEPS = ['Basic Info', 'Location', 'Details & Price', 'Photos']
 
 export default function NewListing() {
-  const [step, setStep]     = useState(0)
-  const [images, setImages] = useState([])
-  const [form, setForm]     = useState({
+  const [step, setStep]         = useState(0)
+  const [images, setImages]     = useState([])
+  const [documents, setDocuments] = useState([])
+  const [form, setForm]         = useState({
     title: '', description: '', land_type: 'agricultural',
     district: '', taluk: '', village: '', address: '', survey_number: '',
     latitude: null, longitude: null,
@@ -39,7 +40,7 @@ export default function NewListing() {
 
   const handleSubmit = async () => {
     try {
-      const listing = await createListing(form, images, user.id)
+      const listing = await createListing(form, images, documents, user.id)
       toast.success('Listing submitted for review! 🎉')
       // Notify admin
       notifyAdminNewListing(listing, profile?.full_name, profile?.phone)
@@ -97,7 +98,7 @@ export default function NewListing() {
             </div>
             <div>
               <label className="label">Land Type *</label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                 {LAND_TYPES.map(t => (
                   <button key={t.value} type="button"
                     onClick={() => set('land_type', t.value)}
@@ -213,20 +214,35 @@ export default function NewListing() {
           </div>
         )}
 
-        {/* Step 3: Photos */}
+        {/* Step 3: Photos & Verification Documents */}
         {step === 3 && (
-          <div className="space-y-5 animate-fade-in">
-            <div>
-              <h2 className="font-display text-lg font-semibold text-gray-800">Upload Photos</h2>
-              <p className="text-sm text-gray-500 mt-1">Good photos = more inquiries. First photo will be the cover image.</p>
+          <div className="space-y-6 animate-fade-in">
+            {/* Photos */}
+            <div className="space-y-3">
+              <div>
+                <h2 className="font-display text-base font-semibold text-gray-800">1. Land Photos / நிலப் புகைப்படங்கள் (Buyers will see this)</h2>
+                <p className="text-xs text-gray-500 mt-0.5">Good photos = more inquiries. First photo will be the cover image.</p>
+              </div>
+              <ImageUpload onFilesChange={setImages} maxFiles={8}/>
             </div>
-            <ImageUpload onFilesChange={setImages} maxFiles={8}/>
+
+            <hr className="border-gray-100" />
+
+            {/* Documents */}
+            <div className="space-y-3">
+              <div>
+                <h2 className="font-display text-base font-semibold text-amber-700">2. Patta & Documents / நிலப் பத்திரங்கள் & பட்டா (Admin Only)</h2>
+                <p className="text-xs text-amber-600/80 mt-0.5">⚠️ Intha documents/patta buyers-ku show aagadhu, admin verification-kaga mattum thaan.</p>
+              </div>
+              <ImageUpload onFilesChange={setDocuments} maxFiles={4}/>
+            </div>
+
             <div className="bg-forest-50 rounded-xl p-4 text-sm text-forest-700">
-              <p className="font-medium mb-1">📸 Photo tips:</p>
+              <p className="font-medium mb-1">📸 Photo & Doc tips:</p>
               <ul className="text-forest-600 space-y-0.5 text-xs">
-                <li>• Take photos in daylight for best results</li>
-                <li>• Include boundary views, entry point, and nearby landmarks</li>
-                <li>• Upload patta/document photos for more credibility</li>
+                <li>• Take photos in daylight for best results.</li>
+                <li>• Upload clear images/PDFs of your Patta, Chitta or FMB sketch.</li>
+                <li>• Documents uploaded here are kept strictly confidential from buyers.</li>
               </ul>
             </div>
           </div>

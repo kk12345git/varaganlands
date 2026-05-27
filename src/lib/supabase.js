@@ -29,6 +29,18 @@ export async function uploadListingImage(file, listingId) {
   return publicUrl
 }
 
+export async function uploadListingDocument(file, listingId) {
+  const ext = file.name.split('.').pop()
+  const path = `listings/${listingId}/docs_${Date.now()}.${ext}`
+  const { data, error } = await supabase.storage.from('listing-images').upload(path, file, {
+    cacheControl: '3600',
+    upsert: false,
+  })
+  if (error) throw error
+  const { data: { publicUrl } } = supabase.storage.from('listing-images').getPublicUrl(path)
+  return publicUrl
+}
+
 export async function deleteListingImage(path) {
   const { error } = await supabase.storage.from('listing-images').remove([path])
   if (error) throw error

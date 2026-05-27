@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { useListingsStore } from '../../store/listingsStore'
-import { uploadListingImage } from '../../lib/supabase'
+import { uploadListingImage, uploadListingDocument } from '../../lib/supabase'
 import { TN_DISTRICTS, LAND_TYPES, AREA_UNITS, WATER_SOURCES } from '../../lib/constants'
 import MapPicker from '../../components/ui/MapPicker'
 import ImageUpload from '../../components/ui/ImageUpload'
@@ -16,6 +16,7 @@ export default function EditListing() {
   const { fetchById, updateListing, loading } = useListingsStore()
   const [form, setForm] = useState(null)
   const [imagesState, setImagesState] = useState([])
+  const [documentsState, setDocumentsState] = useState([])
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
@@ -29,6 +30,7 @@ export default function EditListing() {
           price_per_unit: l.original_price_per_unit || l.price_per_unit,
         })
         setImagesState((l.images || []).map(url => ({ url, file: null })))
+        setDocumentsState((l.documents || []).map(url => ({ url, file: null })))
       } else {
         toast.error('Access denied')
         navigate('/seller/listings')
@@ -62,6 +64,20 @@ export default function EditListing() {
       // 3. Combine both lists
       const finalImages = [...existingKeep, ...uploadedUrls]
 
+      // 4. Separate existing documents to keep vs new documents to upload
+      const existingKeepDocs = documentsState.filter(p => !p.file).map(p => p.url)
+      const newFilesDocs = documentsState.filter(p => p.file).map(p => p.file)
+
+      // 5. Upload new document files to Supabase storage
+      const uploadedDocUrls = []
+      for (const file of newFilesDocs) {
+        const url = await uploadListingDocument(file, id)
+        uploadedDocUrls.push(url)
+      }
+
+      // 6. Combine both document lists
+      const finalDocuments = [...existingKeepDocs, ...uploadedDocUrls]
+
       const updates = {
         title: form.title,
         description: form.description,
@@ -83,6 +99,7 @@ export default function EditListing() {
         electricity: form.electricity,
         patta_available: form.patta_available,
         images: finalImages,
+        documents: finalDocuments,
         status: 'pending', // re-submit for review on edit
         original_title: form.title,
         original_description: form.description,
@@ -130,7 +147,7 @@ export default function EditListing() {
         </div>
         <div>
           <label className="label">Land Type *</label>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {LAND_TYPES.map(t => (
               <button key={t.value} type="button" onClick={() => set('land_type', t.value)}
                 className={`p-2.5 rounded-xl border-2 text-sm transition text-center
@@ -210,9 +227,20 @@ export default function EditListing() {
         </div>
       </div>
 
-      <div className="card p-6">
-        <h2 className="font-semibold text-gray-700 mb-4">Photos</h2>
-        <ImageUpload onImagesChange={setImagesState} maxFiles={8} existingImages={form.images||[]}/>
+      <div className="card p-6 space-y-6">
+        <div>
+          <h2 className="font-semibold text-gray-700 mb-2">Photos / நிலப் புகைப்படங்கள் (Buyers will see this)</h2>
+          <p className="text-xs text-gray-500 mb-3">Buyers will see these photos on the public website.</p>
+          <ImageUpload onImagesChange={setImagesState} maxFiles={8} existingImages={form.images||[]}/>
+        </div>
+
+        <hr className="border-gray-100" />
+
+        <div>
+          <h2 className="font-semibold text-amber-700 mb-2">Patta & Documents / நிலப் பத்திரங்கள் & பட்டா (Admin Only)</h2>
+          <p className="text-xs text-amber-600/80 mb-3">⚠️ These documents are only shown to Admins for verification and are hidden from buyers.</p>
+          <ImageUpload onImagesChange={setDocumentsState} maxFiles={4} existingImages={form.documents||[]}/>
+        </div>
       </div>
 
       <button onClick={handleSave} disabled={loading || submitting}

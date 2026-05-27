@@ -341,6 +341,32 @@ export default function AdminReviewListing() {
             </div>
           </div>
 
+          {/* Verification Documents (Admin Only) */}
+          <div className="card p-5 border-2 border-amber-100 bg-amber-50/5">
+            <h3 className="font-semibold text-amber-800 mb-3 flex items-center gap-1.5">
+              📄 Patta & Verification Docs
+            </h3>
+            {listing.documents && listing.documents.length > 0 ? (
+              <div className="space-y-2">
+                {listing.documents.map((doc, idx) => (
+                  <a
+                    key={idx}
+                    href={doc}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2 p-2.5 bg-white border border-gray-200 rounded-xl hover:border-amber-500 hover:shadow-sm transition text-xs font-medium text-gray-700"
+                  >
+                    <span className="text-lg">📄</span>
+                    <span className="truncate flex-1">Document #{idx + 1}</span>
+                    <span className="text-forest-600 font-bold hover:underline">View ↗</span>
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs text-gray-400 italic">No verification documents uploaded by seller.</p>
+            )}
+          </div>
+
           {listing.admin_notes !== undefined && (
             <div className="card p-5">
               <h3 className="font-semibold text-gray-700 mb-2">Admin Notes</h3>

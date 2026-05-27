@@ -5,3 +5,5 @@ node_modules/
 .DS_Store
 *.log
 .vite/
+*.mp4
+*.mp4.mp4
