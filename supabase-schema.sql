@@ -21,7 +21,8 @@ create table public.profiles (
 
 -- Auto-create profile on signup
 create or replace function handle_new_user()
-returns trigger language plpgsql security definer as $$
+returns trigger language plpgsql security definer
+set search_path = public as $$
 begin
   insert into public.profiles (id, full_name, phone, role)
   values (
@@ -37,6 +38,8 @@ $$;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure handle_new_user();
+
+revoke execute on function public.handle_new_user() from public;
 
 -- ─── LISTINGS ────────────────────────────────────────────────────────────────
 create table public.listings (
@@ -135,7 +138,8 @@ create index idx_notifications_user   on public.notifications(user_id, read);
 
 -- ─── UPDATED_AT TRIGGER ──────────────────────────────────────────────────────
 create or replace function update_updated_at()
-returns trigger language plpgsql as $$
+returns trigger language plpgsql
+set search_path = public as $$
 begin new.updated_at = now(); return new; end;
 $$;
 
